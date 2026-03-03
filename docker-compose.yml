@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  gravity-claw-core:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: gravity-claw-core
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=file:/app/data/gravity-claw.db
+      # Use host.docker.internal to access native local MCP servers if needed
+      - HOST_IP=host.docker.internal 
+    volumes:
+      # Mount the permanent memory and data
+      - ./data:/app/data
+      # Mount the skills and knowledge directories
+      - ./skills:/app/skills
+      # SECURITY ISOLATION: The agent ONLY sees this sandbox folder on the host
+      - ./project_sandbox:/app/sandbox
+    networks:
+      - gravity-mesh
+
+  # The Submarine Scraper (already built in Phase 6)
+  submarine-scraper:
+    build:
+      context: ./scraper-sandbox
+      dockerfile: Dockerfile
+    container_name: submarine-scraper
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    networks:
+      - gravity-mesh
+    # Disable network access to the host
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+networks:
+  gravity-mesh:
+    driver: bridge

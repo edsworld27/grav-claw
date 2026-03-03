@@ -1,0 +1,14 @@
+{
+    "name": "scraper-sandbox",
+    "version": "1.0.0",
+    "description": "Ephemeral Docker Sandbox for Puppeteer",
+    "main": "server.js",
+    "scripts": {
+        "start": "node server.js"
+    },
+    "dependencies": {
+        "express": "^4.19.0",
+        "puppeteer": "^22.6.0",
+        "cheerio": "^1.0.0-rc.12"
+    }
+}
